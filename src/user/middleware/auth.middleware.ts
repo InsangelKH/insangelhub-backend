@@ -16,7 +16,9 @@ export class AuthMiddleware implements NestMiddleware {
             return;
         }
 
-        const token = req.headers.authorization;
+        const tokenWithQuotes = req.headers.authorization;
+
+        const token = tokenWithQuotes.replace(/^"(.*)"$/, '$1');
 
         try {
             const decode = verify(token, JWT_SECRET);

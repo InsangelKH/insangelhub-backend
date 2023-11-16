@@ -1,15 +1,17 @@
+import { getMulterOptions } from '@app/helpers/fileLoader';
 import {
     Body, Controller, Get, Post, Put, UploadedFile, UseGuards, UseInterceptors, UsePipes, ValidationPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
-import { CreateUserDto } from './dto/createUserDto';
-import { UserService } from './user.service';
-import { UserResponseInterface } from './types/userResponse.interface';
-import { LoginUserDto } from './dto/loginUserDto';
-import { AuthGuard } from './guard/auth.guard';
 import { User } from './decorator/user.decorator';
-import { UserEntity } from './user.entity';
+import { CreateUserDto } from './dto/createUserDto';
+import { LoginUserDto } from './dto/loginUserDto';
 import { UpdateUserDto } from './dto/updateUserDto';
+import { AuthGuard } from './guard/auth.guard';
+import { ProfleResponseInterface } from './types/profileResponse.interface';
+import { UserResponseInterface } from './types/userResponse.interface';
+import { UserEntity } from './user.entity';
+import { UserService } from './user.service';
 
 @Controller()
 export class UserController {
@@ -41,15 +43,25 @@ export class UserController {
         return this.userService.buildUserResponse(user);
     }
 
+    @Post('profile')
+    @UseGuards(AuthGuard)
+    async getProfileById(
+        @Body('id') userId: string,
+    ): Promise<ProfleResponseInterface> {
+        const profile = await this.userService.findProfileById(Number(userId));
+        return this.userService.buildProfileResponse(profile);
+    }
+
     @Put('user')
     @UseGuards(AuthGuard)
-    @UseInterceptors(FileInterceptor('image'))
+    @UseInterceptors(FileInterceptor('image', getMulterOptions()))
     async updateCurrentUser(
         @User('id') currrentUserId: number,
         @Body('user') updateUserDto: UpdateUserDto,
         @UploadedFile() image: Express.Multer.File,
     ): Promise<UserResponseInterface> {
-        const user = await this.userService.updateUser(updateUserDto, currrentUserId, image);
+        const imageName = image.filename;
+        const user = await this.userService.updateUser(updateUserDto, currrentUserId);
         return this.userService.buildUserResponse(user);
     }
 }

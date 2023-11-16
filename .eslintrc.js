@@ -15,6 +15,7 @@ module.exports = {
     ],
     rules: {
         indent: [2, 4],
+        'no-use-before-define': 'warn',
         'no-useless-constructor': 'off',
         'no-bitwise': 'off',
         'no-empty-function': 'warn',

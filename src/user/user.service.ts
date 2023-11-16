@@ -9,6 +9,7 @@ import { CreateUserDto } from './dto/createUserDto';
 import { UserResponseInterface } from './types/userResponse.interface';
 import { LoginUserDto } from './dto/loginUserDto';
 import { UpdateUserDto } from './dto/updateUserDto';
+import { ProfleResponseInterface } from './types/profileResponse.interface';
 
 @Injectable()
 export class UserService {
@@ -61,10 +62,17 @@ export class UserService {
         });
     }
 
-    async updateUser(updateUserDto: UpdateUserDto, userId: number, image?: Express.Multer.File): Promise<UserEntity> {
+    async findProfileById(id: number): Promise<UserEntity> {
+        const profile = await this.findById(id);
+        delete profile.id;
+        delete profile.role;
+        return profile;
+    }
+
+    async updateUser(updateUserDto: UpdateUserDto, userId: number, image?: string): Promise<UserEntity> {
         const user = await this.findById(userId);
         if (image) {
-            user.image = `/uploads/${image.filename}`;
+            user.image = image;
         }
         Object.assign(user, updateUserDto);
         return await this.userRepository.save(user);
@@ -86,6 +94,14 @@ export class UserService {
             user: {
                 ...user,
                 token: this.generateJwn(user),
+            },
+        };
+    }
+
+    buildProfileResponse(user: UserEntity): ProfleResponseInterface {
+        return {
+            user: {
+                ...user,
             },
         };
     }
