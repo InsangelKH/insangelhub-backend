@@ -64,7 +64,6 @@ export class UserService {
 
     async findProfileById(id: number): Promise<UserEntity> {
         const profile = await this.findById(id);
-        delete profile.id;
         delete profile.role;
         return profile;
     }

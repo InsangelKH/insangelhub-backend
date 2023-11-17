@@ -61,7 +61,7 @@ export class UserController {
         @UploadedFile() image: Express.Multer.File,
     ): Promise<UserResponseInterface> {
         const imageName = image.filename;
-        const user = await this.userService.updateUser(updateUserDto, currrentUserId);
+        const user = await this.userService.updateUser(updateUserDto, currrentUserId, imageName);
         return this.userService.buildUserResponse(user);
     }
 }
