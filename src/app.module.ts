@@ -1,8 +1,8 @@
-import { UserModule } from '@app/user/user.module';
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from 'db/data-source';
-import { AuthMiddleware } from './user/middleware/auth.middleware';
+import { UserModule } from './entities/user/user.module';
+import { AuthMiddleware } from './entities/user/middleware/auth.middleware';
 
 @Module({
     imports: [
