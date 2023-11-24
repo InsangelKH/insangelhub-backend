@@ -14,6 +14,7 @@ import { ArticlesResponseInterface } from './types/articlesResponse.interface';
 export class ArticleController {
     constructor(private readonly articleService: ArticleService) {}
 
+    @Get()
     async findAll(
         @Query() query: any,
     ): Promise<ArticlesResponseInterface> {

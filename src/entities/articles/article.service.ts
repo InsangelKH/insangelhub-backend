@@ -24,16 +24,34 @@ export class ArticleService {
 
         queryBuilder.orderBy('articles.createdAt', 'DESC');
 
-        if (query.sort && query.sortBy) {
+        if (query.sortBy && query.sort) {
             const direction = query.sort.toUpperCase() === 'ASC' ? 'ASC' : 'DESC';
             queryBuilder.orderBy(`articles.${query.sortBy}`, direction);
         }
 
-        const articlesCount = await queryBuilder.getCount();
+        if (query.type) {
+            queryBuilder.andWhere('articles.type LIKE :type', {
+                type: `%${query.type}%`,
+            });
+        }
 
-        if (query.tag) {
-            queryBuilder.andWhere('articles.tagList LIKE :tag', {
-                tag: `%${query.tag}%`,
+        if (query.search) {
+            queryBuilder.andWhere((qb) => {
+                qb.where('articles.title LIKE :search OR articles.subtitle LIKE :search', {
+                    search: `%${query.search}%`,
+                });
+
+                qb.orWhere('articles.type::text LIKE :search', {
+                    search: `%${query.search}%`,
+                });
+
+                qb.orWhere('jsonb_typeof(articles.blocks) = \'array\' AND EXISTS (SELECT 1 FROM jsonb_array_elements(articles.blocks) AS block WHERE block->>\'type\' = \'TEXT\' AND block->>\'paragraphs\' LIKE :search)', {
+                    search: `%${query.search}%`,
+                });
+
+                qb.orWhere('jsonb_typeof(articles.blocks) = \'array\' AND EXISTS (SELECT 1 FROM jsonb_array_elements(articles.blocks) AS block WHERE block->>\'type\' = \'CODE\' AND block->>\'code\' LIKE :search)', {
+                    search: `%${query.search}%`,
+                });
             });
         }
 
@@ -56,6 +74,7 @@ export class ArticleService {
         }
 
         const articles = await queryBuilder.getMany();
+        const articlesCount = await queryBuilder.getCount();
 
         return { articles, articlesCount };
     }

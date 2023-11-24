@@ -22,7 +22,7 @@ export class ArticleEntity {
         image: string;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-        createAt: Date;
+        createdAt: Date;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
         updatedAt: Date;
