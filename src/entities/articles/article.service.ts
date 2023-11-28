@@ -82,9 +82,23 @@ export class ArticleService {
     async createArticle(
         currentUser: UserEntity,
         createArticleDto: CreateArticleDto,
+        images?: Express.Multer.File[],
     ): Promise<ArticleEntity> {
         const article = new ArticleEntity();
         Object.assign(article, createArticleDto);
+
+        if (images) {
+            images.forEach((image) => {
+                if (image.originalname === createArticleDto.image) {
+                    article.image = image.filename;
+                }
+                article.blocks.forEach((block) => {
+                    if (block.type === 'IMAGE' && block.src === image.originalname) {
+                        block.src = image.filename;
+                    }
+                });
+            });
+        }
 
         article.slug = this.getSlug(createArticleDto.title);
         article.author = currentUser;

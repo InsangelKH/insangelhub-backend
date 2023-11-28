@@ -26,7 +26,7 @@ export class UserService {
             where: { username: createUserDto.username },
         });
 
-        if (userByEmail || userByEmail) {
+        if (userByEmail || userByUsername) {
             throw new HttpException('Email or username are taken', HttpStatus.UNPROCESSABLE_ENTITY);
         }
 

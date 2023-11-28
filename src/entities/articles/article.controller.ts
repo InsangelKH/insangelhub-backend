@@ -1,7 +1,9 @@
 import {
-    Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards, UsePipes, ValidationPipe,
+    Body, Controller, Delete, Get, Param, Post, Put, Query, UploadedFiles, UseGuards, UseInterceptors, UsePipes, ValidationPipe,
 } from '@nestjs/common';
 import { DeleteResult } from 'typeorm';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { getMulterOptions } from '@app/helpers/fileLoader';
 import { ArticleService } from './article.service';
 import { AuthGuard } from '../user/guard/auth.guard';
 import { User } from '../user/decorator/user.decorator';
@@ -32,10 +34,16 @@ export class ArticleController {
     @Post()
     @UseGuards(AuthGuard)
     @UsePipes(new ValidationPipe())
+    @UseInterceptors(FilesInterceptor('image', 10, getMulterOptions()))
     async createArticle(
         @User() currentUser: UserEntity,
-        @Body('article') createArticleDto: CreateArticleDto,
+        @Body() createArticleDto: CreateArticleDto,
+        @UploadedFiles() images: Express.Multer.File[],
     ): Promise<ArticleResponseInterface> {
+        if (images) {
+            const article = await this.articleService.createArticle(currentUser, createArticleDto, images);
+            return this.articleService.buildArticleResponse(article);
+        }
         const article = await this.articleService.createArticle(currentUser, createArticleDto);
         return this.articleService.buildArticleResponse(article);
     }
