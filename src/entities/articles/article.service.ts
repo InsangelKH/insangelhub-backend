@@ -152,7 +152,7 @@ export class ArticleService {
     }
 
     async findBySlug(slug: string):Promise<ArticleEntity> {
-        const article = this.articleRepository.findOne({ where: { slug } });
+        const article = await this.articleRepository.findOne({ where: { slug } });
 
         if (!article) {
             throw new HttpException('Article does not exist', HttpStatus.NOT_FOUND);
