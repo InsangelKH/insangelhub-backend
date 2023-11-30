@@ -48,6 +48,23 @@ export class ArticleController {
         return this.articleService.buildArticleResponse(article);
     }
 
+    @Put(':slug')
+    @UseGuards(AuthGuard)
+    @UseInterceptors(FilesInterceptor('image', 10, getMulterOptions()))
+    async updateArticle(
+        @User() currentUser: UserEntity,
+        @Param('slug') slug: string,
+        @Body() updateArticleDto: CreateArticleDto,
+        @UploadedFiles() images: Express.Multer.File[],
+    ): Promise<ArticleResponseInterface> {
+        if (images) {
+            const article = await this.articleService.updateArticle(currentUser, slug, updateArticleDto, images);
+            return this.articleService.buildArticleResponse(article);
+        }
+        const article = await this.articleService.updateArticle(currentUser, slug, updateArticleDto);
+        return this.articleService.buildArticleResponse(article);
+    }
+
     @Delete(':slug')
     @UseGuards(AuthGuard)
     async deleteArticle(
@@ -55,16 +72,5 @@ export class ArticleController {
         @Param('slug') slug: string,
     ): Promise<DeleteResult> {
         return await this.articleService.deleteArticle(currentUser, slug);
-    }
-
-    @Put(':slug')
-    @UseGuards(AuthGuard)
-    async updateArticle(
-        @User() currentUser: UserEntity,
-        @Param('slug') slug: string,
-        @Body('article') updateArticleDto: CreateArticleDto,
-    ): Promise<ArticleResponseInterface> {
-        const article = await this.articleService.updateArticle(currentUser, slug, updateArticleDto);
-        return this.articleService.buildArticleResponse(article);
     }
 }

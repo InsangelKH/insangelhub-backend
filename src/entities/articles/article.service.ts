@@ -106,29 +106,11 @@ export class ArticleService {
         return await this.articleRepository.save(article);
     }
 
-    async deleteArticle(
-        currentUser: UserEntity,
-        slug: string,
-    ): Promise<DeleteResult> {
-        const article = await this.findBySlug(slug);
-
-        if (!article) {
-            throw new HttpException('Article does not exist', HttpStatus.NOT_FOUND);
-        }
-
-        if (
-            article.author.id !== currentUser.id && currentUser.role !== 'ADMIN'
-        ) {
-            throw new HttpException('You are not an author', HttpStatus.FORBIDDEN);
-        }
-
-        return await this.articleRepository.delete({ slug });
-    }
-
     async updateArticle(
         currentUser: UserEntity,
         slug: string,
         updateArticleDto: CreateArticleDto,
+        images?: Express.Multer.File[],
     ): Promise<ArticleEntity> {
         const article = await this.findBySlug(slug);
 
@@ -148,7 +130,39 @@ export class ArticleService {
 
         Object.assign(article, updateArticleDto);
 
+        if (images) {
+            images.forEach((image) => {
+                if (image.originalname === updateArticleDto.image) {
+                    article.image = image.filename;
+                }
+                article.blocks.forEach((block) => {
+                    if (block.type === 'IMAGE' && block.src === image.originalname) {
+                        block.src = image.filename;
+                    }
+                });
+            });
+        }
+
         return this.articleRepository.save(article);
+    }
+
+    async deleteArticle(
+        currentUser: UserEntity,
+        slug: string,
+    ): Promise<DeleteResult> {
+        const article = await this.findBySlug(slug);
+
+        if (!article) {
+            throw new HttpException('Article does not exist', HttpStatus.NOT_FOUND);
+        }
+
+        if (
+            article.author.id !== currentUser.id && currentUser.role !== 'ADMIN'
+        ) {
+            throw new HttpException('You are not an author', HttpStatus.FORBIDDEN);
+        }
+
+        return await this.articleRepository.delete({ slug });
     }
 
     async findBySlug(slug: string):Promise<ArticleEntity> {
