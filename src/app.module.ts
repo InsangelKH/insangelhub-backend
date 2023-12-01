@@ -4,12 +4,14 @@ import { dataSourceOptions } from 'db/data-source';
 import { UserModule } from './entities/user/user.module';
 import { AuthMiddleware } from './entities/user/middleware/auth.middleware';
 import { ArticleModule } from './entities/articles/article.module';
+import { CommentModule } from './entities/comments/comment.module';
 
 @Module({
     imports: [
         TypeOrmModule.forRoot(dataSourceOptions),
         UserModule,
         ArticleModule,
+        CommentModule,
     ],
 })
 export class AppModule {

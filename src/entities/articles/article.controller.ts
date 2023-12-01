@@ -1,13 +1,13 @@
+import { getMulterOptions } from '@app/helpers/fileLoader';
 import {
     Body, Controller, Delete, Get, Param, Post, Put, Query, UploadedFiles, UseGuards, UseInterceptors, UsePipes, ValidationPipe,
 } from '@nestjs/common';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { DeleteResult } from 'typeorm';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { getMulterOptions } from '@app/helpers/fileLoader';
-import { ArticleService } from './article.service';
-import { AuthGuard } from '../user/guard/auth.guard';
 import { User } from '../user/decorator/user.decorator';
+import { AuthGuard } from '../user/guard/auth.guard';
 import { UserEntity } from '../user/user.entity';
+import { ArticleService } from './article.service';
 import { CreateArticleDto } from './dto/createArticle.dto';
 import { ArticleResponseInterface } from './types/articleResponseInterface';
 import { ArticlesResponseInterface } from './types/articlesResponse.interface';

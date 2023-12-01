@@ -3,6 +3,7 @@ import {
     BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ArticleEntity } from '../articles/article.entity';
+import { CommentEntity } from '../comments/comment.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity {
@@ -34,4 +35,7 @@ export class UserEntity {
 
     @OneToMany(() => ArticleEntity, (article) => article.author)
         articles: ArticleEntity[];
+
+    @OneToMany(() => CommentEntity, (comment) => comment.author)
+        comments: CommentEntity[];
 }
