@@ -15,7 +15,16 @@ export class CommentService {
         private readonly articleRepository: Repository<ArticleEntity>,
     ) {}
 
-    async leaveComment(slug: string, crearteCommentDto: UserEntity, commentDto: CreateCommentDto):Promise<CommentEntity> {
+    async findCommentsByArticleSlug(slug: string): Promise<CommentEntity[]> {
+        const article = await this.findArticleBySlug(slug);
+        console.log(article);
+
+        const { comments } = article;
+
+        return comments;
+    }
+
+    async leaveComment(slug: string, crearteCommentDto: UserEntity, commentDto: CreateCommentDto): Promise<CommentEntity> {
         const article = await this.findArticleBySlug(slug);
 
         const { text } = commentDto;
@@ -28,7 +37,7 @@ export class CommentService {
         return await this.commentRepository.save(comment);
     }
 
-    async updateComment(id: number, currentUser: UserEntity, text: string):Promise<CommentEntity> {
+    async updateComment(id: number, currentUser: UserEntity, text: string): Promise<CommentEntity> {
         const comment = await this.findCommentById(id);
 
         if (comment.author.id !== currentUser.id && currentUser.role !== 'ADMIN') {
@@ -40,7 +49,7 @@ export class CommentService {
         return await this.commentRepository.save(comment);
     }
 
-    async deleteComment(id: number, currentUser: UserEntity):Promise<DeleteResult> {
+    async deleteComment(id: number, currentUser: UserEntity): Promise<DeleteResult> {
         const comment = await this.findCommentById(id);
 
         if (comment.author.id !== currentUser.id && currentUser.role !== 'ADMIN') {
@@ -63,8 +72,11 @@ export class CommentService {
         return comment;
     }
 
-    async findArticleBySlug(slug: string):Promise<ArticleEntity> {
-        const article = await this.articleRepository.findOne({ where: { slug } });
+    async findArticleBySlug(slug: string): Promise<ArticleEntity> {
+        const article = await this.articleRepository.findOne({
+            where: { slug },
+            relations: ['comments', 'comments.author'],
+        });
 
         if (!article) {
             throw new HttpException('Article does not exist', HttpStatus.NOT_FOUND);

@@ -168,7 +168,6 @@ export class ArticleService {
     async findBySlug(slug: string):Promise<ArticleEntity> {
         const article = await this.articleRepository.findOne({
             where: { slug },
-            relations: ['comments'],
         });
 
         if (!article) {

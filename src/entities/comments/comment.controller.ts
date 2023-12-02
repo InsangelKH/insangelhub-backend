@@ -1,5 +1,5 @@
 import {
-    Body, Controller, Delete, Param, Post, Put, UseGuards, UsePipes, ValidationPipe,
+    Body, Controller, Delete, Get, Param, Post, Put, UseGuards, UsePipes, ValidationPipe,
 } from '@nestjs/common';
 import { DeleteResult } from 'typeorm';
 import { CommentService } from './comment.service';
@@ -14,6 +14,13 @@ import { UpdateCommentDto } from './dto/updateCommentDto';
 @Controller('comment')
 export class CommentController {
     constructor(private readonly commentService: CommentService) {}
+
+    @Get(':slug')
+    async findArticleComments(
+        @Param('slug') slug: string,
+    ): Promise<CommentEntity[]> {
+        return await this.commentService.findCommentsByArticleSlug(slug);
+    }
 
     @Post(':slug')
     @UseGuards(AuthGuard)
@@ -42,7 +49,7 @@ export class CommentController {
     async deleteComment(
         @Body('comment') deleteCommentDto: DeleteCommentDto,
         @User() currrentUser: UserEntity,
-    ):Promise<DeleteResult> {
+    ): Promise<DeleteResult> {
         return await this.commentService.deleteComment(deleteCommentDto.id, currrentUser);
     }
 }
