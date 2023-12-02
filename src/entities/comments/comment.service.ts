@@ -17,7 +17,6 @@ export class CommentService {
 
     async findCommentsByArticleSlug(slug: string): Promise<CommentEntity[]> {
         const article = await this.findArticleBySlug(slug);
-        console.log(article);
 
         const { comments } = article;
 
