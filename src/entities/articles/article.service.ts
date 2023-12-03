@@ -7,6 +7,7 @@ import { UserEntity } from '../user/user.entity';
 import { CreateArticleDto } from './dto/createArticle.dto';
 import { ArticleResponseInterface } from './types/articleResponseInterface';
 import { ArticlesResponseInterface } from './types/articlesResponse.interface';
+import { CommentEntity } from '../comments/comment.entity';
 
 @Injectable()
 export class ArticleService {
@@ -15,6 +16,8 @@ export class ArticleService {
         private readonly articleRepository: Repository<ArticleEntity>,
         @InjectRepository(UserEntity)
         private readonly userRepository: Repository<UserEntity>,
+        @InjectRepository(CommentEntity)
+        private readonly commentRepository: Repository<CommentEntity>,
     ) {}
 
     async findAll(query: any): Promise<ArticlesResponseInterface> {
@@ -162,12 +165,17 @@ export class ArticleService {
             throw new HttpException('You are not an author', HttpStatus.FORBIDDEN);
         }
 
+        const commentIds = article.comments.map((comment) => comment.id);
+
+        await this.commentRepository.delete(commentIds);
+
         return await this.articleRepository.delete({ slug });
     }
 
     async findBySlug(slug: string):Promise<ArticleEntity> {
         const article = await this.articleRepository.findOne({
             where: { slug },
+            relations: ['comments'],
         });
 
         if (!article) {
