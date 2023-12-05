@@ -5,6 +5,7 @@ import { UserModule } from './entities/user/user.module';
 import { AuthMiddleware } from './entities/user/middleware/auth.middleware';
 import { ArticleModule } from './entities/articles/article.module';
 import { CommentModule } from './entities/comments/comment.module';
+import { ResumeModule } from './entities/resume/resume.module';
 
 @Module({
     imports: [
@@ -12,6 +13,7 @@ import { CommentModule } from './entities/comments/comment.module';
         UserModule,
         ArticleModule,
         CommentModule,
+        ResumeModule,
     ],
 })
 export class AppModule {

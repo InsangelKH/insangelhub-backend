@@ -17,7 +17,7 @@ export class ResumeEntity {
     @Column('simple-array')
         skills: string[];
 
-    @Column('simple-array')
+    @Column('simple-array', { default: ['Russian - Native', 'English - C1 Advanced'] })
         languages: string[];
 
     @Column()
