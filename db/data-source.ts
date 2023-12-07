@@ -2,11 +2,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 
 export const dataSourceOptions: DataSourceOptions = {
     type: 'postgres',
-    host: 'localhost',
-    port: 5432,
-    username: 'insangel',
-    password: '123',
-    database: 'insangelhub',
+    url: process.env.DATABASE_URL,
     entities: ['dist/**/*.entity{.ts,.js}'],
     synchronize: false,
     migrations: ['dist/db/migrations/*.js'],
