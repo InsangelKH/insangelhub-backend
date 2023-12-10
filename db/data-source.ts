@@ -2,7 +2,7 @@ import { DataSource, DataSourceOptions } from 'typeorm';
 
 export const dataSourceOptions: DataSourceOptions = {
     type: 'postgres',
-    url: 'postgres://jobyycrbtcjgzh:97a315342d0cd8229825ce300f608875b4e167122a792a3af40334d6e767c32b@ec2-44-206-204-65.compute-1.amazonaws.com:5432/d72b7vq7jdp4i3',
+    url: 'postgres://xqqnbxwjosarsy:8b810befc095c6e6994e20d6aa2f97fde3d1e0e3cf9a2a224e854be5022be29f@ec2-52-215-68-14.eu-west-1.compute.amazonaws.com:5432/delglvhtcc2t3n',
     entities: ['dist/**/*.entity{.ts,.js}'],
     synchronize: false,
     migrations: ['dist/db/migrations/*.js'],
