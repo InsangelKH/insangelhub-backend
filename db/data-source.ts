@@ -9,11 +9,6 @@ export const dataSourceOptions: DataSourceOptions = {
     ssl: {
         rejectUnauthorized: false,
     },
-    extra: {
-        ssl: {
-            sslmode: 'require',
-        },
-    },
 };
 
 const dataSource = new DataSource(dataSourceOptions);
