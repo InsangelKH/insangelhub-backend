@@ -1,8 +1,8 @@
-import { getMulterOptions } from '@app/helpers/fileLoader';
 import {
     Body, Controller, Get, Post, Put, UploadedFile, UseGuards, UseInterceptors, UsePipes, ValidationPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
+import { getMulterOptions } from '../../helpers/fileLoader';
 import { User } from './decorator/user.decorator';
 import { CreateUserDto } from './dto/createUserDto';
 import { LoginUserDto } from './dto/loginUserDto';

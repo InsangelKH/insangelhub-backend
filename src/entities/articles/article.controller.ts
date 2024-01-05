@@ -1,9 +1,9 @@
-import { getMulterOptions } from '@app/helpers/fileLoader';
 import {
     Body, Controller, Delete, Get, Param, Post, Put, Query, UploadedFiles, UseGuards, UseInterceptors, UsePipes, ValidationPipe,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { DeleteResult } from 'typeorm';
+import { getMulterOptions } from '../../helpers/fileLoader';
 import { User } from '../user/decorator/user.decorator';
 import { AuthGuard } from '../user/guard/auth.guard';
 import { UserEntity } from '../user/user.entity';
